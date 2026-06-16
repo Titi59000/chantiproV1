@@ -1,8 +1,33 @@
 "use client"
 
 import Link from "next/link"
+import { useEffect, useState } from "react"
+import { supabase } from "../../supabase"
 
 export default function Dashboard() {
+
+  // Les vrais chiffres depuis Supabase
+  const [nbChantiers, setNbChantiers] = useState(0)
+  const [nbEmployes, setNbEmployes] = useState(0)
+
+  // Charger les chiffres au démarrage
+  useEffect(() => {
+    async function chargerStats() {
+      // Compter les chantiers
+      const { count: countChantiers } = await supabase
+        .from("chantiers")
+        .select("*", { count: "exact" })
+      setNbChantiers(countChantiers)
+
+      // Compter les employés
+      const { count: countEmployes } = await supabase
+        .from("employes")
+        .select("*", { count: "exact" })
+      setNbEmployes(countEmployes)
+    }
+    chargerStats()
+  }, [])
+
   return (
     <div className="min-h-screen bg-gray-50">
 
@@ -21,7 +46,7 @@ export default function Dashboard() {
           <Link href="/chantiers" className="flex-1">
             <div className="bg-white p-4 rounded-xl shadow text-center cursor-pointer hover:shadow-md">
               <p className="text-gray-500 text-sm">Chantiers actifs</p>
-              <p className="text-3xl font-bold text-green-600 mt-1">8</p>
+              <p className="text-3xl font-bold text-green-600 mt-1">{nbChantiers}</p>
             </div>
           </Link>
 
@@ -29,7 +54,7 @@ export default function Dashboard() {
           <Link href="/employes" className="flex-1">
             <div className="bg-white p-4 rounded-xl shadow text-center cursor-pointer hover:shadow-md">
               <p className="text-gray-500 text-sm">Employés</p>
-              <p className="text-3xl font-bold text-green-600 mt-1">14</p>
+              <p className="text-3xl font-bold text-green-600 mt-1">{nbEmployes}</p>
             </div>
           </Link>
 
@@ -49,7 +74,6 @@ export default function Dashboard() {
         {/* Liste des chantiers */}
         <div className="flex flex-col gap-3">
 
-          {/* Chantier 1 */}
           <Link href="/chantiers">
             <div className="bg-white p-4 rounded-xl shadow flex justify-between items-center cursor-pointer hover:shadow-md">
               <div>
@@ -60,7 +84,6 @@ export default function Dashboard() {
             </div>
           </Link>
 
-          {/* Chantier 2 */}
           <Link href="/chantiers">
             <div className="bg-white p-4 rounded-xl shadow flex justify-between items-center cursor-pointer hover:shadow-md">
               <div>
@@ -71,7 +94,6 @@ export default function Dashboard() {
             </div>
           </Link>
 
-          {/* Chantier 3 */}
           <Link href="/chantiers">
             <div className="bg-white p-4 rounded-xl shadow flex justify-between items-center cursor-pointer hover:shadow-md">
               <div>
