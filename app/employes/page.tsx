@@ -8,7 +8,36 @@ export default function Employes() {
 
   // On crée une variable pour stocker les employés
   const [employes, setEmployes] = useState([])
+// Est-ce que le formulaire est visible ?
+const [showForm, setShowForm] = useState(false)
 
+// Les valeurs tapées dans le formulaire
+const [nom, setNom] = useState("")
+const [prenom, setPrenom] = useState("")
+const [role, setRole] = useState("")
+const [telephone, setTelephone] = useState("")
+// Fonction pour ajouter un employé
+async function ajouterEmploye() {
+  
+  // On envoie les données à Supabase
+  const { error } = await supabase
+    .from("employes")
+    .insert({ nom, prenom, role, telephone })
+
+  // Si pas d'erreur on recharge la liste
+  if (!error) {
+    // On vide le formulaire
+    setNom("")
+    setPrenom("")
+    setRole("")
+    setTelephone("")
+    // On cache le formulaire
+    setShowForm(false)
+    // On recharge les employés
+    const { data } = await supabase.from("employes").select("*")
+    setEmployes(data)
+  }
+}
   // Au chargement de la page on récupère les employés
   useEffect(() => {
     async function chargerEmployes() {
@@ -35,11 +64,27 @@ export default function Employes() {
 
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-800">Employés</h2>
-          <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold">
-            + Ajouter un employé
-          </button>
+          <button 
+  onClick={() => setShowForm(true)}
+  className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold">
+  + Ajouter un employé
+</button>
         </div>
-
+{showForm && (
+  <div className="bg-white p-6 rounded-xl shadow mb-6 mt-4">
+    <h3 className="font-bold text-gray-800 mb-4">Nouvel employé</h3>
+    <div className="flex flex-col gap-3">
+      <input placeholder="Prénom" value={prenom} onChange={(e) => setPrenom(e.target.value)} className="p-3 border rounded-lg text-gray-700" />
+      <input placeholder="Nom" value={nom} onChange={(e) => setNom(e.target.value)} className="p-3 border rounded-lg text-gray-700" />
+      <input placeholder="Rôle" value={role} onChange={(e) => setRole(e.target.value)} className="p-3 border rounded-lg text-gray-700" />
+      <input placeholder="Téléphone" value={telephone} onChange={(e) => setTelephone(e.target.value)} className="p-3 border rounded-lg text-gray-700" />
+      <div className="flex gap-3">
+        <button onClick={ajouterEmploye} className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold">Ajouter</button>
+        <button onClick={() => setShowForm(false)} className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-bold">Annuler</button>
+      </div>
+    </div>
+  </div>
+)}
         {/* Liste des employés depuis la base de données */}
         <div className="flex flex-col gap-3">
           {employes.map((employe) => (
