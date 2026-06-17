@@ -15,6 +15,8 @@ export default function Planning() {
   const [date, setDate] = useState("")
   const [heureDebut, setHeureDebut] = useState("")
   const [heureFin, setHeureFin] = useState("")
+  // Décalage de semaine (0 = semaine actuelle, 1 = suivante, -1 = précédente)
+const [decalageSemaine, setDecalageSemaine] = useState(0)
 
   // 40 couleurs différentes
   const couleurs = [
@@ -69,16 +71,16 @@ function couleurEmploye(employeId) {
   return couleurs[index % couleurs.length]
 }
   // Les 7 jours de la semaine actuelle
-  function getSemaine() {
-    const aujourd = new Date()
-    const lundi = new Date(aujourd)
-    lundi.setDate(aujourd.getDate() - aujourd.getDay() + 1)
-    return Array.from({ length: 7 }, (_, i) => {
-      const jour = new Date(lundi)
-      jour.setDate(lundi.getDate() + i)
-      return jour
-    })
-  }
+ function getSemaine() {
+  const aujourd = new Date()
+  const lundi = new Date(aujourd)
+  lundi.setDate(aujourd.getDate() - aujourd.getDay() + 1 + (decalageSemaine * 7))
+  return Array.from({ length: 7 }, (_, i) => {
+    const jour = new Date(lundi)
+    jour.setDate(lundi.getDate() + i)
+    return jour
+  })
+}
 
   const semaine = getSemaine()
   const nomsJours = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
@@ -249,7 +251,28 @@ function couleurEmploye(employeId) {
             </div>
           </div>
         )}
+{/* Navigation entre les semaines */}
+<div className="flex justify-between items-center mb-4">
+  
+  <button
+    onClick={() => setDecalageSemaine(decalageSemaine - 1)}
+    className="bg-white shadow px-4 py-2 rounded-lg font-bold text-gray-700">
+    ← Semaine précédente
+  </button>
 
+  <button
+    onClick={() => setDecalageSemaine(0)}
+    className="text-green-600 font-bold text-sm">
+    Revenir à aujourd'hui
+  </button>
+
+  <button
+    onClick={() => setDecalageSemaine(decalageSemaine + 1)}
+    className="bg-white shadow px-4 py-2 rounded-lg font-bold text-gray-700">
+    Semaine suivante →
+  </button>
+
+</div>
         {/* Vue semaine */}
         <div className="grid grid-cols-7 gap-2">
           {semaine.map((jour, index) => (
