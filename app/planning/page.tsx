@@ -136,7 +136,17 @@ function couleurEmploye(employeId) {
       chargerDonnees()
     }
   }
-
+// Changer le statut entre Prévu et Réalisé
+async function changerStatutPlanning(id, statutActuel) {
+  const nouveauStatut = statutActuel === "Réalisé" ? "Prévu" : "Réalisé"
+  const { error } = await supabase
+    .from("planning")
+    .update({ statut: nouveauStatut })
+    .eq("id", id)
+  if (!error) {
+    chargerDonnees()
+  }
+}
   // Trouver le nom d'un employé
   function nomEmploye(id) {
     const employe = employes.find(e => e.id === id)
@@ -284,26 +294,40 @@ function couleurEmploye(employeId) {
                 <p className="text-xs">{jour.getDate()}/{jour.getMonth() + 1}</p>
               </div>
 
-              {/* Entrées du planning */}
-              <div className="p-2 min-h-24 flex flex-col gap-1">
-                {planningDuJour(jour).map((entree) => (
-                  <div
-                    key={entree.id}
-                    style={{
-                      backgroundColor: couleurEmploye(entree.employe_id).background,
-                      borderColor: couleurEmploye(entree.employe_id).border,
-                      borderWidth: "1px",
-                      borderStyle: "solid"
-                    }}
-                    className="rounded p-1 text-xs cursor-pointer"
-                    onClick={() => supprimerPlanning(entree.id)}>
-                    <p className="font-bold text-gray-800">{nomEmploye(entree.employe_id)}</p>
-                    <p className="text-gray-600">{nomChantier(entree.chantier_id)}</p>
-                    <p className="text-gray-400">{entree.heure_debut} - {entree.heure_fin}</p>
-                  </div>
-                ))}
-              </div>
+         {/* Entrées du planning */}
+<div className="p-2 min-h-24 flex flex-col gap-1">
+  {planningDuJour(jour).map((entree) => (
+    <div
+      key={entree.id}
+      style={{
+        backgroundColor: couleurEmploye(entree.employe_id).background,
+        borderColor: couleurEmploye(entree.employe_id).border,
+        borderWidth: "1px",
+        borderStyle: "solid"
+      }}
+      className="rounded p-1 text-xs">
 
+      <p className="font-bold text-gray-800">{nomEmploye(entree.employe_id)}</p>
+      <p className="text-gray-600">{nomChantier(entree.chantier_id)}</p>
+      <p className="text-gray-400">{entree.heure_debut} - {entree.heure_fin}</p>
+
+      <div className="flex items-center justify-between mt-1">
+        <span
+          onClick={() => changerStatutPlanning(entree.id, entree.statut)}
+          className={`text-xs px-2 py-0.5 rounded-full font-bold cursor-pointer ${entree.statut === "Réalisé" ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"}`}>
+          {entree.statut || "Prévu"}
+        </span>
+
+        <button
+          onClick={() => supprimerPlanning(entree.id)}
+          className="text-red-500 font-bold text-xs">
+          ✕
+        </button>
+      </div>
+
+    </div>
+  ))}
+</div>
             </div>
           ))}
         </div>
