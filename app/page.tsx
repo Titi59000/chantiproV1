@@ -3,6 +3,7 @@
 
 // On importe Link depuis Next.js
 import Link from "next/link"
+import { Building2, Clock, MessageCircle, Calendar } from "lucide-react"
 export default function Home() {
   return (
     // Div principale qui centre tout
@@ -28,23 +29,28 @@ export default function Home() {
       <div className="flex gap-6 mt-16">
 
         {/* Carte 1 */}
-        <div className="bg-white p-6 rounded-xl shadow w-48">
-          <h2 className="font-bold text-gray-800">Chantiers</h2>
-          <p className="text-gray-500 text-sm mt-2">Suivez tous vos chantiers en temps réel</p>
-        </div>
+      {/* Carte Chantiers avec icône */}
+<div className="bg-white p-6 rounded-xl shadow w-48">
+  <Building2 className="text-green-600 mb-2" size={32} />
+  <h2 className="font-bold text-gray-800">Chantiers</h2>
+  <p className="text-gray-500 text-sm mt-2">Suivez tous vos chantiers en temps réel</p>
+</div>
 
-        {/* Carte 2 */}
-        <div className="bg-white p-6 rounded-xl shadow w-48">
-          <h2 className="font-bold text-gray-800">Heures</h2>
-          <p className="text-gray-500 text-sm mt-2">Pointage simple pour chaque employé</p>
-        </div>
+{/* Carte Heures avec icône */}
+<div className="bg-white p-6 rounded-xl shadow w-48">
+  <Clock className="text-green-600 mb-2" size={32} />
+  <h2 className="font-bold text-gray-800">Heures</h2>
+  <p className="text-gray-500 text-sm mt-2">Pointage simple pour chaque employé</p>
+</div>
 
-        {/* Carte 3 */}
-        <div className="bg-white p-6 rounded-xl shadow w-48">
-          <h2 className="font-bold text-gray-800">Messagerie</h2>
-          <p className="text-gray-500 text-sm mt-2">Communiquez avec toute votre équipe</p>
-        </div>
+{/* Carte Messagerie avec icône */}
+<div className="bg-white p-6 rounded-xl shadow w-48">
+  <MessageCircle className="text-green-600 mb-2" size={32} />
+  <h2 className="font-bold text-gray-800">Messagerie</h2>
+  <p className="text-gray-500 text-sm mt-2">Communiquez avec toute votre équipe</p>
+</div>
 
+      
       </div>
 
     </div>
