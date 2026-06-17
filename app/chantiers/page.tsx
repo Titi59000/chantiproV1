@@ -8,6 +8,9 @@ export default function Chantiers() {
 
   // Liste des chantiers
   const [chantiers, setChantiers] = useState([])
+  // Photos
+  const [photos, setPhotos] = useState({})
+  const [chantierPhotoActif, setChantierPhotoActif] = useState(null)
   // Afficher ou cacher le formulaire
   const [showForm, setShowForm] = useState(false)
   // Les valeurs du formulaire
@@ -31,16 +34,13 @@ export default function Chantiers() {
       .from("chantiers")
       .insert({ nom, adresse, statut, client, responsable, raison })
     if (!error) {
-      // On vide le formulaire
       setNom("")
       setAdresse("")
       setStatut("En cours")
       setClient("")
       setResponsable("")
       setRaison("")
-      // On cache le formulaire
       setShowForm(false)
-      // On recharge la liste
       chargerChantiers()
     }
   }
@@ -78,6 +78,50 @@ export default function Chantiers() {
     }
   }
 
+  // Charger les photos d'un chantier
+  async function chargerPhotos(chantierId) {
+    const { data } = await supabase
+      .from("photos")
+      .select("*")
+      .eq("chantier_id", chantierId)
+    setPhotos(prev => ({ ...prev, [chantierId]: data }))
+  }
+
+  // Uploader une photo
+  async function uploaderPhoto(chantierId, fichier) {
+    const nomFichier = `${chantierId}-${Date.now()}-${fichier.name}`
+
+    const { error: uploadError } = await supabase.storage
+      .from("photos-chantier")
+      .upload(nomFichier, fichier)
+
+    if (!uploadError) {
+      const { data: urlData } = supabase.storage
+        .from("photos-chantier")
+        .getPublicUrl(nomFichier)
+
+      await supabase
+        .from("photos")
+        .insert({ chantier_id: chantierId, url: urlData.publicUrl })
+
+      chargerPhotos(chantierId)
+      alert("Photo ajoutée avec succès !")
+    } else {
+      alert("Erreur lors de l'ajout de la photo")
+    }
+  }
+
+  // Supprimer une photo
+  async function supprimerPhoto(photoId, chantierId) {
+    const { error } = await supabase
+      .from("photos")
+      .delete()
+      .eq("id", photoId)
+    if (!error) {
+      chargerPhotos(chantierId)
+    }
+  }
+
   // Au chargement de la page on récupère les chantiers
   useEffect(() => {
     chargerChantiers()
@@ -112,7 +156,6 @@ export default function Chantiers() {
             <h3 className="font-bold text-gray-800 mb-4">Nouveau chantier</h3>
             <div className="flex flex-col gap-3">
 
-              {/* Champ nom */}
               <input
                 placeholder="Nom du chantier"
                 value={nom}
@@ -120,7 +163,6 @@ export default function Chantiers() {
                 className="p-3 border rounded-lg text-gray-700"
               />
 
-              {/* Champ adresse */}
               <input
                 placeholder="Adresse"
                 value={adresse}
@@ -128,7 +170,6 @@ export default function Chantiers() {
                 className="p-3 border rounded-lg text-gray-700"
               />
 
-              {/* Champ client */}
               <input
                 placeholder="Client"
                 value={client}
@@ -136,7 +177,6 @@ export default function Chantiers() {
                 className="p-3 border rounded-lg text-gray-700"
               />
 
-              {/* Champ responsable */}
               <input
                 placeholder="Responsable"
                 value={responsable}
@@ -144,7 +184,6 @@ export default function Chantiers() {
                 className="p-3 border rounded-lg text-gray-700"
               />
 
-              {/* Champ raison optionnel */}
               <input
                 placeholder="Raison (optionnel)"
                 value={raison}
@@ -152,7 +191,6 @@ export default function Chantiers() {
                 className="p-3 border rounded-lg text-gray-700"
               />
 
-              {/* Menu statut */}
               <select
                 value={statut}
                 onChange={(e) => setStatut(e.target.value)}
@@ -162,7 +200,6 @@ export default function Chantiers() {
                 <option>Terminé</option>
               </select>
 
-              {/* Boutons ajouter et annuler */}
               <div className="flex gap-3">
                 <button
                   onClick={ajouterChantier}
@@ -184,6 +221,7 @@ export default function Chantiers() {
         <div className="flex flex-col gap-3">
           {chantiers.map((chantier) => (
             <div key={chantier.id} className="bg-white p-4 rounded-xl shadow">
+
               <div className="flex justify-between items-start">
 
                 {/* Infos du chantier */}
@@ -205,7 +243,6 @@ export default function Chantiers() {
                 {/* Statut et actions */}
                 <div className="flex flex-col items-end gap-2">
 
-                  {/* Menu déroulant pour changer le statut */}
                   <select
                     value={chantier.statut}
                     onChange={(e) => changerStatut(chantier.id, e.target.value)}
@@ -218,7 +255,6 @@ export default function Chantiers() {
                     <option>Terminé</option>
                   </select>
 
-                  {/* Bouton supprimer */}
                   <button
                     onClick={() => supprimerChantier(chantier.id)}
                     className="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-sm font-bold">
@@ -227,6 +263,50 @@ export default function Chantiers() {
 
                 </div>
               </div>
+
+              {/* Section photos */}
+              <div className="mt-3 pt-3 border-t">
+                <button
+                  onClick={() => {
+                    if (chantierPhotoActif === chantier.id) {
+                      setChantierPhotoActif(null)
+                    } else {
+                      setChantierPhotoActif(chantier.id)
+                      chargerPhotos(chantier.id)
+                    }
+                  }}
+                  className="text-green-600 text-sm font-bold">
+                  📷 Photos {chantierPhotoActif === chantier.id ? "▲" : "▼"}
+                </button>
+
+                {chantierPhotoActif === chantier.id && (
+                  <div className="mt-3">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => uploaderPhoto(chantier.id, e.target.files[0])}
+                      className="text-sm mb-3"
+                    />
+                    <div className="flex gap-2 flex-wrap">
+                      {photos[chantier.id] && photos[chantier.id].map((photo) => (
+                        <div key={photo.id} className="relative">
+                          <img
+                            src={photo.url}
+                            alt="Photo chantier"
+                            className="w-24 h-24 object-cover rounded-lg"
+                          />
+                          <button
+                            onClick={() => supprimerPhoto(photo.id, chantier.id)}
+                            className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
             </div>
           ))}
         </div>
