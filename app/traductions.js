@@ -34,6 +34,14 @@ export const traductions = {
     enCours: "En cours",
     enPause: "En pause",
     termine: "Terminé",
+    nouveauChantier: "Nouveau chantier",
+    nomChantier: "Nom du chantier",
+    adresse: "Adresse",
+    client: "Client",
+    responsable: "Responsable",
+    raison: "Raison (optionnel)",
+    ajouterChantier: "+ Ajouter un chantier",
+    ajouterUneRaison: "Ajouter une raison...",
   },
 
   en: {
@@ -71,6 +79,14 @@ export const traductions = {
     enCours: "In progress",
     enPause: "On hold",
     termine: "Completed",
+    nouveauChantier: "New site",
+    nomChantier: "Site name",
+    adresse: "Address",
+    client: "Client",
+    responsable: "Manager",
+    raison: "Reason (optional)",
+    ajouterChantier: "+ Add a site",
+    ajouterUneRaison: "Add a reason...",
   },
 
   it: {
@@ -108,6 +124,14 @@ export const traductions = {
     enCours: "In corso",
     enPause: "In pausa",
     termine: "Completato",
+    nouveauChantier: "Nuovo cantiere",
+    nomChantier: "Nome del cantiere",
+    adresse: "Indirizzo",
+    client: "Cliente",
+    responsable: "Responsabile",
+    raison: "Motivo (opzionale)",
+    ajouterChantier: "+ Aggiungi cantiere",
+    ajouterUneRaison: "Aggiungi un motivo...",
   },
 
   ru: {
@@ -145,6 +169,14 @@ export const traductions = {
     enCours: "В процессе",
     enPause: "На паузе",
     termine: "Завершено",
+    nouveauChantier: "Новый объект",
+    nomChantier: "Название объекта",
+    adresse: "Адрес",
+    client: "Клиент",
+    responsable: "Ответственный",
+    raison: "Причина (необязательно)",
+    ajouterChantier: "+ Добавить объект",
+    ajouterUneRaison: "Добавить причину...",
   },
 
   pt: {
@@ -182,5 +214,13 @@ export const traductions = {
     enCours: "Em andamento",
     enPause: "Em pausa",
     termine: "Concluído",
+    nouveauChantier: "Novo canteiro",
+    nomChantier: "Nome do canteiro",
+    adresse: "Endereço",
+    client: "Cliente",
+    responsable: "Responsável",
+    raison: "Motivo (opcional)",
+    ajouterChantier: "+ Adicionar canteiro",
+    ajouterUneRaison: "Adicionar um motivo...",
   },
 }

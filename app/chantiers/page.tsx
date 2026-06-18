@@ -4,8 +4,11 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "../../supabase"
 import BarreNavigation from "../components/BarreNavigation"
+import { useLangue } from "../LangueContext"
 
 export default function Chantiers() {
+
+  const { t } = useLangue()
 
   const [chantiers, setChantiers] = useState([])
   const [photos, setPhotos] = useState({})
@@ -118,58 +121,58 @@ export default function Chantiers() {
     <div className="min-h-screen bg-gray-50 pb-20">
 
       <div className="bg-white shadow px-6 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-green-600">ChantPro</h1>
+        <h1 className="text-xl font-bold text-green-600">{t("chantpro")}</h1>
         <Link href="/dashboard">
-          <button className="text-gray-500 text-sm">← Retour</button>
+          <button className="text-gray-500 text-sm">{t("retour")}</button>
         </Link>
       </div>
 
       <div className="p-6">
 
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Chantiers</h2>
+          <h2 className="text-xl font-bold text-gray-800">{t("chantiers")}</h2>
           <button
             onClick={() => setShowForm(true)}
             className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold">
-            + Ajouter un chantier
+            {t("ajouterChantier")}
           </button>
         </div>
 
         {showForm && (
           <div className="bg-white p-6 rounded-xl shadow mb-6">
-            <h3 className="font-bold text-gray-800 mb-4">Nouveau chantier</h3>
+            <h3 className="font-bold text-gray-800 mb-4">{t("nouveauChantier")}</h3>
             <div className="flex flex-col gap-3">
 
               <input
-                placeholder="Nom du chantier"
+                placeholder={t("nomChantier")}
                 value={nom}
                 onChange={(e) => setNom(e.target.value)}
                 className="p-3 border rounded-lg text-gray-700"
               />
 
               <input
-                placeholder="Adresse"
+                placeholder={t("adresse")}
                 value={adresse}
                 onChange={(e) => setAdresse(e.target.value)}
                 className="p-3 border rounded-lg text-gray-700"
               />
 
               <input
-                placeholder="Client"
+                placeholder={t("client")}
                 value={client}
                 onChange={(e) => setClient(e.target.value)}
                 className="p-3 border rounded-lg text-gray-700"
               />
 
               <input
-                placeholder="Responsable"
+                placeholder={t("responsable")}
                 value={responsable}
                 onChange={(e) => setResponsable(e.target.value)}
                 className="p-3 border rounded-lg text-gray-700"
               />
 
               <input
-                placeholder="Raison (optionnel)"
+                placeholder={t("raison")}
                 value={raison}
                 onChange={(e) => setRaison(e.target.value)}
                 className="p-3 border rounded-lg text-gray-700"
@@ -179,21 +182,21 @@ export default function Chantiers() {
                 value={statut}
                 onChange={(e) => setStatut(e.target.value)}
                 className="p-3 border rounded-lg text-gray-700">
-                <option>En cours</option>
-                <option>En pause</option>
-                <option>Terminé</option>
+                <option value="En cours">{t("enCours")}</option>
+                <option value="En pause">{t("enPause")}</option>
+                <option value="Terminé">{t("termine")}</option>
               </select>
 
               <div className="flex gap-3">
                 <button
                   onClick={ajouterChantier}
                   className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold">
-                  Ajouter
+                  {t("ajouter")}
                 </button>
                 <button
                   onClick={() => setShowForm(false)}
                   className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-bold">
-                  Annuler
+                  {t("annuler")}
                 </button>
               </div>
 
@@ -210,11 +213,11 @@ export default function Chantiers() {
                 <div>
                   <p className="font-bold text-gray-800">{chantier.nom}</p>
                   <p className="text-gray-500 text-sm">{chantier.adresse}</p>
-                  <p className="text-gray-500 text-sm mt-1">Client : {chantier.client}</p>
-                  <p className="text-gray-500 text-sm">Responsable : {chantier.responsable}</p>
+                  <p className="text-gray-500 text-sm mt-1">{t("client")} : {chantier.client}</p>
+                  <p className="text-gray-500 text-sm">{t("responsable")} : {chantier.responsable}</p>
 
                   <input
-                    placeholder="Ajouter une raison..."
+                    placeholder={t("ajouterUneRaison")}
                     defaultValue={chantier.raison || ""}
                     onBlur={(e) => modifierRaison(chantier.id, e.target.value)}
                     className="text-sm text-orange-500 border-b border-gray-200 mt-2 w-64 bg-transparent outline-none"
@@ -230,15 +233,15 @@ export default function Chantiers() {
                       ${chantier.statut === "En cours" ? "bg-green-100 text-green-700" :
                       chantier.statut === "En pause" ? "bg-yellow-100 text-yellow-700" :
                       "bg-gray-100 text-gray-700"}`}>
-                    <option>En cours</option>
-                    <option>En pause</option>
-                    <option>Terminé</option>
+                    <option value="En cours">{t("enCours")}</option>
+                    <option value="En pause">{t("enPause")}</option>
+                    <option value="Terminé">{t("termine")}</option>
                   </select>
 
                   <button
                     onClick={() => supprimerChantier(chantier.id)}
                     className="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-sm font-bold">
-                    Supprimer
+                    {t("supprimer")}
                   </button>
 
                 </div>
@@ -255,7 +258,7 @@ export default function Chantiers() {
                     }
                   }}
                   className="text-green-600 text-sm font-bold">
-                  📷 Photos {chantierPhotoActif === chantier.id ? "▲" : "▼"}
+                  📷 {t("photos")} {chantierPhotoActif === chantier.id ? "▲" : "▼"}
                 </button>
 
                 {chantierPhotoActif === chantier.id && (
