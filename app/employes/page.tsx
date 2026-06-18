@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { supabase } from "../../supabase"
 import BarreNavigation from "../components/BarreNavigation"
 import { useLangue } from "../LangueContext"
@@ -9,6 +10,7 @@ import { useLangue } from "../LangueContext"
 export default function Employes() {
 
   const { t } = useLangue()
+  const router = useRouter()
 
   const [employes, setEmployes] = useState([])
   const [showForm, setShowForm] = useState(false)
@@ -19,6 +21,15 @@ export default function Employes() {
   const [pin, setPin] = useState("")
 
   const [employePermissions, setEmployePermissions] = useState(null)
+
+  // Protection : réservé au patron ou employé avec permission
+  useEffect(() => {
+    const id = localStorage.getItem("employeId")
+    const peutGerer = localStorage.getItem("peutSupprimerEmployes")
+    if (id !== "0" && peutGerer !== "oui") {
+      router.push("/mon-espace")
+    }
+  }, [])
 
   async function chargerEmployes() {
     const { data } = await supabase.from("employes").select("*")

@@ -23,6 +23,15 @@ export default function Planning() {
   const [decalageSemaine, setDecalageSemaine] = useState(0)
   const [jourMobileIndex, setJourMobileIndex] = useState(0)
 
+  // Permission de modifier le planning
+  const [peutModifier, setPeutModifier] = useState(false)
+
+  useEffect(() => {
+    const id = localStorage.getItem("employeId")
+    const permission = localStorage.getItem("peutModifierPlanning")
+    setPeutModifier(id === "0" || permission === "oui")
+  }, [])
+
   const couleurs = [
     { background: "#93C5FD", border: "#3B82F6" },
     { background: "#BFDBFE", border: "#60A5FA" },
@@ -199,14 +208,16 @@ export default function Planning() {
 
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-800">{t("planningSemaine")}</h2>
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold">
-            + {t("ajouter")}
-          </button>
+          {peutModifier && (
+            <button
+              onClick={() => setShowForm(true)}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold">
+              + {t("ajouter")}
+            </button>
+          )}
         </div>
 
-        {showForm && (
+        {showForm && peutModifier && (
           <div className="bg-white p-6 rounded-xl shadow mb-6">
             <h3 className="font-bold text-gray-800 mb-4">{t("nouvelleEntree")}</h3>
             <div className="flex flex-col gap-3">
@@ -318,16 +329,18 @@ export default function Planning() {
 
                     <div className="flex items-center justify-between mt-1">
                       <span
-                        onClick={() => changerStatutPlanning(entree.id, entree.statut)}
-                        className={`text-xs px-2 py-0.5 rounded-full font-bold cursor-pointer ${entree.statut === "Réalisé" ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"}`}>
+                        onClick={() => peutModifier && changerStatutPlanning(entree.id, entree.statut)}
+                        className={`text-xs px-2 py-0.5 rounded-full font-bold ${peutModifier ? "cursor-pointer" : ""} ${entree.statut === "Réalisé" ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"}`}>
                         {entree.statut === "Réalisé" ? t("realise") : t("prevu")}
                       </span>
 
-                      <button
-                        onClick={() => supprimerPlanning(entree.id)}
-                        className="text-red-500 font-bold text-xs">
-                        ✕
-                      </button>
+                      {peutModifier && (
+                        <button
+                          onClick={() => supprimerPlanning(entree.id)}
+                          className="text-red-500 font-bold text-xs">
+                          ✕
+                        </button>
+                      )}
                     </div>
 
                   </div>
@@ -384,16 +397,18 @@ export default function Planning() {
 
                 <div className="flex items-center justify-between mt-2">
                   <span
-                    onClick={() => changerStatutPlanning(entree.id, entree.statut)}
-                    className={`text-sm px-3 py-1 rounded-full font-bold cursor-pointer ${entree.statut === "Réalisé" ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"}`}>
+                    onClick={() => peutModifier && changerStatutPlanning(entree.id, entree.statut)}
+                    className={`text-sm px-3 py-1 rounded-full font-bold ${peutModifier ? "cursor-pointer" : ""} ${entree.statut === "Réalisé" ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"}`}>
                     {entree.statut === "Réalisé" ? t("realise") : t("prevu")}
                   </span>
 
-                  <button
-                    onClick={() => supprimerPlanning(entree.id)}
-                    className="text-red-500 font-bold text-sm">
-                    {t("supprimer")}
-                  </button>
+                  {peutModifier && (
+                    <button
+                      onClick={() => supprimerPlanning(entree.id)}
+                      className="text-red-500 font-bold text-sm">
+                      {t("supprimer")}
+                    </button>
+                  )}
                 </div>
 
               </div>

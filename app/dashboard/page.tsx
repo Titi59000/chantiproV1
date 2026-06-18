@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { supabase } from "../../supabase"
 import BarreNavigation from "../components/BarreNavigation"
 import { useLangue } from "../LangueContext"
@@ -9,9 +10,18 @@ import { useLangue } from "../LangueContext"
 export default function Dashboard() {
 
   const { t } = useLangue()
+  const router = useRouter()
 
   const [nbChantiers, setNbChantiers] = useState(0)
   const [nbEmployes, setNbEmployes] = useState(0)
+
+  // Protection : le dashboard est réservé au patron
+  useEffect(() => {
+    const id = localStorage.getItem("employeId")
+    if (id !== "0") {
+      router.push("/mon-espace")
+    }
+  }, [])
 
   useEffect(() => {
     async function chargerStats() {

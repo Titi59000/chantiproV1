@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { supabase } from "../../supabase"
 import BarreNavigation from "../components/BarreNavigation"
 import { useLangue } from "../LangueContext"
@@ -9,6 +10,7 @@ import { useLangue } from "../LangueContext"
 export default function Chantiers() {
 
   const { t } = useLangue()
+  const router = useRouter()
 
   const [chantiers, setChantiers] = useState([])
   const [photos, setPhotos] = useState({})
@@ -20,6 +22,15 @@ export default function Chantiers() {
   const [client, setClient] = useState("")
   const [responsable, setResponsable] = useState("")
   const [raison, setRaison] = useState("")
+
+  // Protection : réservé au patron ou employé avec permission
+  useEffect(() => {
+    const id = localStorage.getItem("employeId")
+    const peutGerer = localStorage.getItem("peutGererChantiers")
+    if (id !== "0" && peutGerer !== "oui") {
+      router.push("/mon-espace")
+    }
+  }, [])
 
   async function chargerChantiers() {
     const { data } = await supabase.from("chantiers").select("*")

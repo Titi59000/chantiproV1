@@ -30,6 +30,10 @@ export default function Login() {
         const nomFinal = nomAffiche.trim() || identifiant.split("@")[0]
         localStorage.setItem("employeId", "0")
         localStorage.setItem("employeNom", nomFinal)
+        // Le patron a tous les droits
+        localStorage.setItem("peutModifierPlanning", "oui")
+        localStorage.setItem("peutSupprimerEmployes", "oui")
+        localStorage.setItem("peutGererChantiers", "oui")
         router.push("/dashboard")
       } else {
         setErreur(t("erreurConnexion"))
@@ -45,6 +49,10 @@ export default function Login() {
       if (data) {
         localStorage.setItem("employeId", data.id)
         localStorage.setItem("employeNom", data.prenom + " " + data.nom)
+        // On sauvegarde les permissions de l'employé
+        localStorage.setItem("peutModifierPlanning", data.peut_modifier_planning ? "oui" : "non")
+        localStorage.setItem("peutSupprimerEmployes", data.peut_supprimer_employes ? "oui" : "non")
+        localStorage.setItem("peutGererChantiers", data.peut_gerer_chantiers ? "oui" : "non")
         router.push("/mon-espace")
       } else {
         setErreur(t("erreurConnexion"))
