@@ -1,14 +1,22 @@
 "use client"
 
 import Link from "next/link"
-import { Calendar, Building2, MessageCircle, Camera, LayoutDashboard } from "lucide-react"
+import { Calendar, Building2, MessageCircle, Camera, LayoutDashboard, Clock } from "lucide-react"
 import { usePathname } from "next/navigation"
+import { useState, useEffect } from "react"
 import { useLangue } from "../LangueContext"
 
 export default function BarreNavigation() {
 
   const pathname = usePathname()
   const { t } = useLangue()
+
+  const [estEmploye, setEstEmploye] = useState(false)
+
+  useEffect(() => {
+    const id = localStorage.getItem("employeId")
+    setEstEmploye(id && id !== "0")
+  }, [pathname])
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-3 z-40">
@@ -26,6 +34,15 @@ export default function BarreNavigation() {
         <Calendar size={24} />
         <span className="text-xs mt-1">{t("planning")}</span>
       </Link>
+
+      {estEmploye && (
+        <Link
+          href="/mon-espace"
+          className={`flex flex-col items-center ${pathname === "/mon-espace" ? "text-green-600" : "text-gray-500"}`}>
+          <Clock size={24} />
+          <span className="text-xs mt-1">Heures</span>
+        </Link>
+      )}
 
       <Link
         href="/chantiers"
