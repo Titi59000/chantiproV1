@@ -12,23 +12,23 @@ export default function Employes() {
   const [prenom, setPrenom] = useState("")
   const [role, setRole] = useState("")
   const [telephone, setTelephone] = useState("")
-
-  // Fonction pour ajouter un employé
-  async function ajouterEmploye() {
-    const { error } = await supabase
-      .from("employes")
-      .insert({ nom, prenom, role, telephone })
-    if (!error) {
-      setNom("")
-      setPrenom("")
-      setRole("")
-      setTelephone("")
-      setShowForm(false)
-      const { data } = await supabase.from("employes").select("*")
-      setEmployes(data)
-    }
+const [pin, setPin] = useState("")
+ // Fonction pour ajouter un employé
+async function ajouterEmploye() {
+  const { error } = await supabase
+    .from("employes")
+    .insert({ nom, prenom, role, telephone, pin })
+  if (!error) {
+    setNom("")
+    setPrenom("")
+    setRole("")
+    setTelephone("")
+    setPin("")
+    setShowForm(false)
+    const { data } = await supabase.from("employes").select("*")
+    setEmployes(data)
   }
-
+}
   // Fonction pour supprimer un employé
   async function supprimerEmploye(id) {
     const { error } = await supabase
@@ -72,6 +72,20 @@ export default function Employes() {
               <input placeholder="Nom" value={nom} onChange={(e) => setNom(e.target.value)} className="p-3 border rounded-lg text-gray-700" />
               <input placeholder="Rôle" value={role} onChange={(e) => setRole(e.target.value)} className="p-3 border rounded-lg text-gray-700" />
               <input placeholder="Téléphone" value={telephone} onChange={(e) => setTelephone(e.target.value)} className="p-3 border rounded-lg text-gray-700" />
+              <input
+  placeholder="Code PIN (4 chiffres)"
+  value={pin}
+  onChange={(e) => setPin(e.target.value)}
+  maxLength={4}
+  className="p-3 border rounded-lg text-gray-700"
+/>
+              <input
+  placeholder="Code PIN (4 chiffres)"
+  value={pin}
+  onChange={(e) => setPin(e.target.value)}
+  maxLength={4}
+  className="p-3 border rounded-lg text-gray-700"
+/>
               <div className="flex gap-3">
                 <button onClick={ajouterEmploye} className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold">Ajouter</button>
                 <button onClick={() => setShowForm(false)} className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-bold">Annuler</button>
