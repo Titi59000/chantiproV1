@@ -3,23 +3,20 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "../../supabase"
+import BarreNavigation from "../components/BarreNavigation"
 
 export default function Dashboard() {
 
-  // Les vrais chiffres depuis Supabase
   const [nbChantiers, setNbChantiers] = useState(0)
   const [nbEmployes, setNbEmployes] = useState(0)
 
-  // Charger les chiffres au démarrage
   useEffect(() => {
     async function chargerStats() {
-      // Compter les chantiers
       const { count: countChantiers } = await supabase
         .from("chantiers")
         .select("*", { count: "exact" })
       setNbChantiers(countChantiers)
 
-      // Compter les employés
       const { count: countEmployes } = await supabase
         .from("employes")
         .select("*", { count: "exact" })
@@ -29,7 +26,7 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20">
 
       {/* Header */}
       <div className="bg-white shadow px-6 py-4 flex justify-between items-center">
@@ -42,7 +39,6 @@ export default function Dashboard() {
         {/* Les 3 stats cliquables */}
         <div className="flex gap-4 mb-6">
 
-          {/* Stat 1 - Chantiers */}
           <Link href="/chantiers" className="flex-1">
             <div className="bg-white p-4 rounded-xl shadow text-center cursor-pointer hover:shadow-md">
               <p className="text-gray-500 text-sm">Chantiers actifs</p>
@@ -50,7 +46,6 @@ export default function Dashboard() {
             </div>
           </Link>
 
-          {/* Stat 2 - Employés */}
           <Link href="/employes" className="flex-1">
             <div className="bg-white p-4 rounded-xl shadow text-center cursor-pointer hover:shadow-md">
               <p className="text-gray-500 text-sm">Employés</p>
@@ -58,7 +53,6 @@ export default function Dashboard() {
             </div>
           </Link>
 
-          {/* Stat 3 - Heures */}
           <Link href="/heures" className="flex-1">
             <div className="bg-white p-4 rounded-xl shadow text-center cursor-pointer hover:shadow-md">
               <p className="text-gray-500 text-sm">Heures ce mois</p>
@@ -106,6 +100,9 @@ export default function Dashboard() {
 
         </div>
       </div>
+
+      <BarreNavigation />
+
     </div>
   )
 }

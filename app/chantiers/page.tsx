@@ -3,32 +3,26 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "../../supabase"
+import BarreNavigation from "../components/BarreNavigation"
 
 export default function Chantiers() {
 
-  // Liste des chantiers
   const [chantiers, setChantiers] = useState([])
-  // Photos
   const [photos, setPhotos] = useState({})
   const [chantierPhotoActif, setChantierPhotoActif] = useState(null)
-  // Afficher ou cacher le formulaire
   const [showForm, setShowForm] = useState(false)
-  // Les valeurs du formulaire
   const [nom, setNom] = useState("")
   const [adresse, setAdresse] = useState("")
   const [statut, setStatut] = useState("En cours")
   const [client, setClient] = useState("")
   const [responsable, setResponsable] = useState("")
-  // La raison optionnelle
   const [raison, setRaison] = useState("")
 
-  // Charger les chantiers depuis Supabase
   async function chargerChantiers() {
     const { data } = await supabase.from("chantiers").select("*")
     setChantiers(data)
   }
 
-  // Ajouter un nouveau chantier
   async function ajouterChantier() {
     const { error } = await supabase
       .from("chantiers")
@@ -45,7 +39,6 @@ export default function Chantiers() {
     }
   }
 
-  // Supprimer un chantier
   async function supprimerChantier(id) {
     const { error } = await supabase
       .from("chantiers")
@@ -56,7 +49,6 @@ export default function Chantiers() {
     }
   }
 
-  // Changer le statut d'un chantier
   async function changerStatut(id, nouveauStatut) {
     const { error } = await supabase
       .from("chantiers")
@@ -67,7 +59,6 @@ export default function Chantiers() {
     }
   }
 
-  // Modifier la raison d'un chantier
   async function modifierRaison(id, nouvelleRaison) {
     const { error } = await supabase
       .from("chantiers")
@@ -78,7 +69,6 @@ export default function Chantiers() {
     }
   }
 
-  // Charger les photos d'un chantier
   async function chargerPhotos(chantierId) {
     const { data } = await supabase
       .from("photos")
@@ -87,7 +77,6 @@ export default function Chantiers() {
     setPhotos(prev => ({ ...prev, [chantierId]: data }))
   }
 
-  // Uploader une photo
   async function uploaderPhoto(chantierId, fichier) {
     const nomFichier = `${chantierId}-${Date.now()}-${fichier.name}`
 
@@ -111,7 +100,6 @@ export default function Chantiers() {
     }
   }
 
-  // Supprimer une photo
   async function supprimerPhoto(photoId, chantierId) {
     const { error } = await supabase
       .from("photos")
@@ -122,15 +110,13 @@ export default function Chantiers() {
     }
   }
 
-  // Au chargement de la page on récupère les chantiers
   useEffect(() => {
     chargerChantiers()
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20">
 
-      {/* Header */}
       <div className="bg-white shadow px-6 py-4 flex justify-between items-center">
         <h1 className="text-xl font-bold text-green-600">ChantPro</h1>
         <Link href="/dashboard">
@@ -140,7 +126,6 @@ export default function Chantiers() {
 
       <div className="p-6">
 
-        {/* Titre et bouton ajouter */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-800">Chantiers</h2>
           <button
@@ -150,7 +135,6 @@ export default function Chantiers() {
           </button>
         </div>
 
-        {/* Formulaire visible seulement si showForm est true */}
         {showForm && (
           <div className="bg-white p-6 rounded-xl shadow mb-6">
             <h3 className="font-bold text-gray-800 mb-4">Nouveau chantier</h3>
@@ -217,21 +201,18 @@ export default function Chantiers() {
           </div>
         )}
 
-        {/* Liste des chantiers */}
         <div className="flex flex-col gap-3">
           {chantiers.map((chantier) => (
             <div key={chantier.id} className="bg-white p-4 rounded-xl shadow">
 
               <div className="flex justify-between items-start">
 
-                {/* Infos du chantier */}
                 <div>
                   <p className="font-bold text-gray-800">{chantier.nom}</p>
                   <p className="text-gray-500 text-sm">{chantier.adresse}</p>
                   <p className="text-gray-500 text-sm mt-1">Client : {chantier.client}</p>
                   <p className="text-gray-500 text-sm">Responsable : {chantier.responsable}</p>
 
-                  {/* Champ raison modifiable directement */}
                   <input
                     placeholder="Ajouter une raison..."
                     defaultValue={chantier.raison || ""}
@@ -240,7 +221,6 @@ export default function Chantiers() {
                   />
                 </div>
 
-                {/* Statut et actions */}
                 <div className="flex flex-col items-end gap-2">
 
                   <select
@@ -264,7 +244,6 @@ export default function Chantiers() {
                 </div>
               </div>
 
-              {/* Section photos */}
               <div className="mt-3 pt-3 border-t">
                 <button
                   onClick={() => {
@@ -312,6 +291,9 @@ export default function Chantiers() {
         </div>
 
       </div>
+
+      <BarreNavigation />
+
     </div>
   )
 }

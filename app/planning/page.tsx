@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "../../supabase"
+import BarreNavigation from "../components/BarreNavigation"
 
 export default function Planning() {
 
@@ -15,10 +16,8 @@ export default function Planning() {
   const [date, setDate] = useState("")
   const [heureDebut, setHeureDebut] = useState("")
   const [heureFin, setHeureFin] = useState("")
-  // Décalage de semaine (0 = semaine actuelle, 1 = suivante, -1 = précédente)
-const [decalageSemaine, setDecalageSemaine] = useState(0)
+  const [decalageSemaine, setDecalageSemaine] = useState(0)
 
-  // 40 couleurs différentes
   const couleurs = [
     { background: "#93C5FD", border: "#3B82F6" },
     { background: "#BFDBFE", border: "#60A5FA" },
@@ -62,30 +61,27 @@ const [decalageSemaine, setDecalageSemaine] = useState(0)
     { background: "#86EFAC", border: "#166534" },
   ]
 
-  // Donner une couleur selon l'index de l'employé
-  // Donner une couleur selon l'index de l'employé
-function couleurEmploye(employeId) {
-  if (!employes || employes.length === 0) return { background: "#E5E7EB", border: "#9CA3AF" }
-  const index = employes.findIndex(e => e.id === employeId)
-  if (index === -1) return { background: "#E5E7EB", border: "#9CA3AF" }
-  return couleurs[index % couleurs.length]
-}
-  // Les 7 jours de la semaine actuelle
- function getSemaine() {
-  const aujourd = new Date()
-  const lundi = new Date(aujourd)
-  lundi.setDate(aujourd.getDate() - aujourd.getDay() + 1 + (decalageSemaine * 7))
-  return Array.from({ length: 7 }, (_, i) => {
-    const jour = new Date(lundi)
-    jour.setDate(lundi.getDate() + i)
-    return jour
-  })
-}
+  function couleurEmploye(employeId) {
+    if (!employes || employes.length === 0) return { background: "#E5E7EB", border: "#9CA3AF" }
+    const index = employes.findIndex(e => e.id === employeId)
+    if (index === -1) return { background: "#E5E7EB", border: "#9CA3AF" }
+    return couleurs[index % couleurs.length]
+  }
+
+  function getSemaine() {
+    const aujourd = new Date()
+    const lundi = new Date(aujourd)
+    lundi.setDate(aujourd.getDate() - aujourd.getDay() + 1 + (decalageSemaine * 7))
+    return Array.from({ length: 7 }, (_, i) => {
+      const jour = new Date(lundi)
+      jour.setDate(lundi.getDate() + i)
+      return jour
+    })
+  }
 
   const semaine = getSemaine()
   const nomsJours = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
 
-  // Charger toutes les données
   async function chargerDonnees() {
     const { data: planningData } = await supabase
       .from("planning")
@@ -104,7 +100,6 @@ function couleurEmploye(employeId) {
     setChantiers(chantiersData)
   }
 
-  // Ajouter une entrée au planning
   async function ajouterPlanning() {
     const { error } = await supabase
       .from("planning")
@@ -126,7 +121,6 @@ function couleurEmploye(employeId) {
     }
   }
 
-  // Supprimer une entrée
   async function supprimerPlanning(id) {
     const { error } = await supabase
       .from("planning")
@@ -136,30 +130,28 @@ function couleurEmploye(employeId) {
       chargerDonnees()
     }
   }
-// Changer le statut entre Prévu et Réalisé
-async function changerStatutPlanning(id, statutActuel) {
-  const nouveauStatut = statutActuel === "Réalisé" ? "Prévu" : "Réalisé"
-  const { error } = await supabase
-    .from("planning")
-    .update({ statut: nouveauStatut })
-    .eq("id", id)
-  if (!error) {
-    chargerDonnees()
+
+  async function changerStatutPlanning(id, statutActuel) {
+    const nouveauStatut = statutActuel === "Réalisé" ? "Prévu" : "Réalisé"
+    const { error } = await supabase
+      .from("planning")
+      .update({ statut: nouveauStatut })
+      .eq("id", id)
+    if (!error) {
+      chargerDonnees()
+    }
   }
-}
-  // Trouver le nom d'un employé
+
   function nomEmploye(id) {
     const employe = employes.find(e => e.id === id)
     return employe ? `${employe.prenom} ${employe.nom}` : ""
   }
 
-  // Trouver le nom d'un chantier
   function nomChantier(id) {
     const chantier = chantiers.find(c => c.id === id)
     return chantier ? chantier.nom : ""
   }
 
-  // Filtrer le planning pour un jour donné
   function planningDuJour(jour) {
     const dateStr = jour.toISOString().split("T")[0]
     return planning.filter(p => p.date === dateStr)
@@ -170,7 +162,7 @@ async function changerStatutPlanning(id, statutActuel) {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20">
 
       {/* Header */}
       <div className="bg-white shadow px-6 py-4 flex justify-between items-center">
@@ -182,7 +174,6 @@ async function changerStatutPlanning(id, statutActuel) {
 
       <div className="p-6">
 
-        {/* Titre et bouton */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-800">Planning de la semaine</h2>
           <button
@@ -192,13 +183,11 @@ async function changerStatutPlanning(id, statutActuel) {
           </button>
         </div>
 
-        {/* Formulaire */}
         {showForm && (
           <div className="bg-white p-6 rounded-xl shadow mb-6">
             <h3 className="font-bold text-gray-800 mb-4">Nouvelle entrée</h3>
             <div className="flex flex-col gap-3">
 
-              {/* Choisir un employé */}
               <select
                 value={employeId}
                 onChange={(e) => setEmployeId(e.target.value)}
@@ -209,7 +198,6 @@ async function changerStatutPlanning(id, statutActuel) {
                 ))}
               </select>
 
-              {/* Choisir un chantier */}
               <select
                 value={chantierId}
                 onChange={(e) => setChantierId(e.target.value)}
@@ -220,7 +208,6 @@ async function changerStatutPlanning(id, statutActuel) {
                 ))}
               </select>
 
-              {/* Date */}
               <input
                 type="date"
                 value={date}
@@ -228,7 +215,6 @@ async function changerStatutPlanning(id, statutActuel) {
                 className="p-3 border rounded-lg text-gray-700"
               />
 
-              {/* Heure début */}
               <input
                 type="time"
                 value={heureDebut}
@@ -236,7 +222,6 @@ async function changerStatutPlanning(id, statutActuel) {
                 className="p-3 border rounded-lg text-gray-700"
               />
 
-              {/* Heure fin */}
               <input
                 type="time"
                 value={heureFin}
@@ -244,7 +229,6 @@ async function changerStatutPlanning(id, statutActuel) {
                 className="p-3 border rounded-lg text-gray-700"
               />
 
-              {/* Boutons */}
               <div className="flex gap-3">
                 <button
                   onClick={ajouterPlanning}
@@ -261,78 +245,81 @@ async function changerStatutPlanning(id, statutActuel) {
             </div>
           </div>
         )}
-{/* Navigation entre les semaines */}
-<div className="flex justify-between items-center mb-4">
-  
-  <button
-    onClick={() => setDecalageSemaine(decalageSemaine - 1)}
-    className="bg-white shadow px-4 py-2 rounded-lg font-bold text-gray-700">
-    ← Semaine précédente
-  </button>
 
-  <button
-    onClick={() => setDecalageSemaine(0)}
-    className="text-green-600 font-bold text-sm">
-    Revenir à aujourd'hui
-  </button>
+        {/* Navigation entre les semaines */}
+        <div className="flex justify-between items-center mb-4">
 
-  <button
-    onClick={() => setDecalageSemaine(decalageSemaine + 1)}
-    className="bg-white shadow px-4 py-2 rounded-lg font-bold text-gray-700">
-    Semaine suivante →
-  </button>
+          <button
+            onClick={() => setDecalageSemaine(decalageSemaine - 1)}
+            className="bg-white shadow px-4 py-2 rounded-lg font-bold text-gray-700">
+            ← Semaine précédente
+          </button>
 
-</div>
+          <button
+            onClick={() => setDecalageSemaine(0)}
+            className="text-green-600 font-bold text-sm">
+            Revenir à aujourd'hui
+          </button>
+
+          <button
+            onClick={() => setDecalageSemaine(decalageSemaine + 1)}
+            className="bg-white shadow px-4 py-2 rounded-lg font-bold text-gray-700">
+            Semaine suivante →
+          </button>
+
+        </div>
+
         {/* Vue semaine */}
         <div className="grid grid-cols-7 gap-2">
           {semaine.map((jour, index) => (
             <div key={index} className="bg-white rounded-xl shadow overflow-hidden">
 
-              {/* En-tête du jour */}
               <div className="bg-green-600 text-white text-center py-2">
                 <p className="font-bold text-sm">{nomsJours[index]}</p>
                 <p className="text-xs">{jour.getDate()}/{jour.getMonth() + 1}</p>
               </div>
 
-         {/* Entrées du planning */}
-<div className="p-2 min-h-24 flex flex-col gap-1">
-  {planningDuJour(jour).map((entree) => (
-    <div
-      key={entree.id}
-      style={{
-        backgroundColor: couleurEmploye(entree.employe_id).background,
-        borderColor: couleurEmploye(entree.employe_id).border,
-        borderWidth: "1px",
-        borderStyle: "solid"
-      }}
-      className="rounded p-1 text-xs">
+              <div className="p-2 min-h-24 flex flex-col gap-1">
+                {planningDuJour(jour).map((entree) => (
+                  <div
+                    key={entree.id}
+                    style={{
+                      backgroundColor: couleurEmploye(entree.employe_id).background,
+                      borderColor: couleurEmploye(entree.employe_id).border,
+                      borderWidth: "1px",
+                      borderStyle: "solid"
+                    }}
+                    className="rounded p-1 text-xs">
 
-      <p className="font-bold text-gray-800">{nomEmploye(entree.employe_id)}</p>
-      <p className="text-gray-600">{nomChantier(entree.chantier_id)}</p>
-      <p className="text-gray-400">{entree.heure_debut} - {entree.heure_fin}</p>
+                    <p className="font-bold text-gray-800">{nomEmploye(entree.employe_id)}</p>
+                    <p className="text-gray-600">{nomChantier(entree.chantier_id)}</p>
+                    <p className="text-gray-400">{entree.heure_debut} - {entree.heure_fin}</p>
 
-      <div className="flex items-center justify-between mt-1">
-        <span
-          onClick={() => changerStatutPlanning(entree.id, entree.statut)}
-          className={`text-xs px-2 py-0.5 rounded-full font-bold cursor-pointer ${entree.statut === "Réalisé" ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"}`}>
-          {entree.statut || "Prévu"}
-        </span>
+                    <div className="flex items-center justify-between mt-1">
+                      <span
+                        onClick={() => changerStatutPlanning(entree.id, entree.statut)}
+                        className={`text-xs px-2 py-0.5 rounded-full font-bold cursor-pointer ${entree.statut === "Réalisé" ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"}`}>
+                        {entree.statut || "Prévu"}
+                      </span>
 
-        <button
-          onClick={() => supprimerPlanning(entree.id)}
-          className="text-red-500 font-bold text-xs">
-          ✕
-        </button>
-      </div>
+                      <button
+                        onClick={() => supprimerPlanning(entree.id)}
+                        className="text-red-500 font-bold text-xs">
+                        ✕
+                      </button>
+                    </div>
 
-    </div>
-  ))}
-</div>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
 
       </div>
+
+      <BarreNavigation />
+
     </div>
   )
 }

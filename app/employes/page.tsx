@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "../../supabase"
+import BarreNavigation from "../components/BarreNavigation"
 
 export default function Employes() {
 
@@ -12,24 +13,24 @@ export default function Employes() {
   const [prenom, setPrenom] = useState("")
   const [role, setRole] = useState("")
   const [telephone, setTelephone] = useState("")
-const [pin, setPin] = useState("")
- // Fonction pour ajouter un employé
-async function ajouterEmploye() {
-  const { error } = await supabase
-    .from("employes")
-    .insert({ nom, prenom, role, telephone, pin })
-  if (!error) {
-    setNom("")
-    setPrenom("")
-    setRole("")
-    setTelephone("")
-    setPin("")
-    setShowForm(false)
-    const { data } = await supabase.from("employes").select("*")
-    setEmployes(data)
+  const [pin, setPin] = useState("")
+
+  async function ajouterEmploye() {
+    const { error } = await supabase
+      .from("employes")
+      .insert({ nom, prenom, role, telephone, pin })
+    if (!error) {
+      setNom("")
+      setPrenom("")
+      setRole("")
+      setTelephone("")
+      setPin("")
+      setShowForm(false)
+      const { data } = await supabase.from("employes").select("*")
+      setEmployes(data)
+    }
   }
-}
-  // Fonction pour supprimer un employé
+
   async function supprimerEmploye(id) {
     const { error } = await supabase
       .from("employes")
@@ -50,20 +51,24 @@ async function ajouterEmploye() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20">
+
       <div className="bg-white shadow px-6 py-4 flex justify-between items-center">
         <h1 className="text-xl font-bold text-green-600">ChantPro</h1>
         <Link href="/dashboard">
           <button className="text-gray-500 text-sm">← Retour</button>
         </Link>
       </div>
+
       <div className="p-6">
+
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-800">Employés</h2>
           <button onClick={() => setShowForm(true)} className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold">
             + Ajouter un employé
           </button>
         </div>
+
         {showForm && (
           <div className="bg-white p-6 rounded-xl shadow mb-6 mt-4">
             <h3 className="font-bold text-gray-800 mb-4">Nouvel employé</h3>
@@ -73,19 +78,12 @@ async function ajouterEmploye() {
               <input placeholder="Rôle" value={role} onChange={(e) => setRole(e.target.value)} className="p-3 border rounded-lg text-gray-700" />
               <input placeholder="Téléphone" value={telephone} onChange={(e) => setTelephone(e.target.value)} className="p-3 border rounded-lg text-gray-700" />
               <input
-  placeholder="Code PIN (4 chiffres)"
-  value={pin}
-  onChange={(e) => setPin(e.target.value)}
-  maxLength={4}
-  className="p-3 border rounded-lg text-gray-700"
-/>
-              <input
-  placeholder="Code PIN (4 chiffres)"
-  value={pin}
-  onChange={(e) => setPin(e.target.value)}
-  maxLength={4}
-  className="p-3 border rounded-lg text-gray-700"
-/>
+                placeholder="Code PIN (4 chiffres)"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                maxLength={4}
+                className="p-3 border rounded-lg text-gray-700"
+              />
               <div className="flex gap-3">
                 <button onClick={ajouterEmploye} className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold">Ajouter</button>
                 <button onClick={() => setShowForm(false)} className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-bold">Annuler</button>
@@ -93,6 +91,7 @@ async function ajouterEmploye() {
             </div>
           </div>
         )}
+
         <div className="flex flex-col gap-3">
           {employes.map((employe) => (
             <div key={employe.id} className="bg-white p-4 rounded-xl shadow flex justify-between items-center">
@@ -117,7 +116,11 @@ async function ajouterEmploye() {
             </div>
           ))}
         </div>
+
       </div>
+
+      <BarreNavigation />
+
     </div>
   )
 }

@@ -7,14 +7,25 @@ import { Calendar, Building2, MessageCircle, Camera } from "lucide-react"
 
 export default function MonEspace() {
 
-  // Pour l'instant on simule que c'est Lucas qui est connecté
-  const employeActuelId = 1
+  // Identité de la personne connectée
+  const [employeActuelId, setEmployeActuelId] = useState(null)
+  const [nomEmploye, setNomEmploye] = useState("")
 
   const [planning, setPlanning] = useState([])
   const [chantiers, setChantiers] = useState([])
 
+  // Récupérer l'identité depuis le localStorage au chargement
+  useEffect(() => {
+    const id = localStorage.getItem("employeId")
+    const nom = localStorage.getItem("employeNom")
+    setEmployeActuelId(id)
+    setNomEmploye(nom)
+  }, [])
+
   // Charger le planning de cet employé seulement
   async function chargerPlanning() {
+    if (!employeActuelId) return
+
     const { data } = await supabase
       .from("planning")
       .select("*")
@@ -34,9 +45,12 @@ export default function MonEspace() {
     return chantier ? chantier.nom : ""
   }
 
+  // On charge le planning seulement une fois qu'on connaît l'id de l'employé
   useEffect(() => {
-    chargerPlanning()
-  }, [])
+    if (employeActuelId) {
+      chargerPlanning()
+    }
+  }, [employeActuelId])
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -44,7 +58,7 @@ export default function MonEspace() {
       {/* Header */}
       <div className="bg-white shadow px-6 py-4">
         <h1 className="text-xl font-bold text-green-600">ChantPro</h1>
-        <p className="text-gray-500 text-sm">Bonjour Lucas 👷</p>
+        <p className="text-gray-500 text-sm">Bonjour {nomEmploye} 👷</p>
       </div>
 
       {/* Mon planning */}
@@ -67,7 +81,7 @@ export default function MonEspace() {
 
       {/* Barre de navigation en bas */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-3">
-        
+
         <button className="flex flex-col items-center text-green-600">
           <Calendar size={24} />
           <span className="text-xs mt-1">Planning</span>
