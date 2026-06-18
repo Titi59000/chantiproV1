@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "../../supabase"
 import BarreNavigation from "../components/BarreNavigation"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 export default function Planning() {
 
@@ -17,6 +18,9 @@ export default function Planning() {
   const [heureDebut, setHeureDebut] = useState("")
   const [heureFin, setHeureFin] = useState("")
   const [decalageSemaine, setDecalageSemaine] = useState(0)
+
+  // Index du jour affiché sur mobile (0 = Lundi, 6 = Dimanche)
+  const [jourMobileIndex, setJourMobileIndex] = useState(0)
 
   const couleurs = [
     { background: "#93C5FD", border: "#3B82F6" },
@@ -81,6 +85,7 @@ export default function Planning() {
 
   const semaine = getSemaine()
   const nomsJours = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
+  const nomsJoursLongs = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 
   async function chargerDonnees() {
     const { data: planningData } = await supabase
@@ -155,6 +160,26 @@ export default function Planning() {
   function planningDuJour(jour) {
     const dateStr = jour.toISOString().split("T")[0]
     return planning.filter(p => p.date === dateStr)
+  }
+
+  // Aller au jour précédent (mobile)
+  function jourPrecedent() {
+    if (jourMobileIndex === 0) {
+      setDecalageSemaine(decalageSemaine - 1)
+      setJourMobileIndex(6)
+    } else {
+      setJourMobileIndex(jourMobileIndex - 1)
+    }
+  }
+
+  // Aller au jour suivant (mobile)
+  function jourSuivant() {
+    if (jourMobileIndex === 6) {
+      setDecalageSemaine(decalageSemaine + 1)
+      setJourMobileIndex(0)
+    } else {
+      setJourMobileIndex(jourMobileIndex + 1)
+    }
   }
 
   useEffect(() => {
@@ -246,8 +271,8 @@ export default function Planning() {
           </div>
         )}
 
-        {/* Navigation entre les semaines */}
-        <div className="flex justify-between items-center mb-4">
+        {/* Navigation entre les semaines - visible seulement sur desktop */}
+        <div className="hidden md:flex justify-between items-center mb-4">
 
           <button
             onClick={() => setDecalageSemaine(decalageSemaine - 1)}
@@ -269,8 +294,8 @@ export default function Planning() {
 
         </div>
 
-        {/* Vue semaine */}
-        <div className="grid grid-cols-7 gap-2">
+        {/* VUE DESKTOP - 7 jours côte à côte */}
+        <div className="hidden md:grid grid-cols-7 gap-2">
           {semaine.map((jour, index) => (
             <div key={index} className="bg-white rounded-xl shadow overflow-hidden">
 
@@ -314,6 +339,79 @@ export default function Planning() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* VUE MOBILE - un jour à la fois */}
+        <div className="md:hidden">
+
+          {/* Navigation jour précédent/suivant */}
+          <div className="flex items-center justify-between mb-4 bg-white rounded-xl shadow p-3">
+            <button onClick={jourPrecedent} className="text-green-600">
+              <ChevronLeft size={28} />
+            </button>
+
+            <div className="text-center">
+              <p className="font-bold text-gray-800">{nomsJoursLongs[jourMobileIndex]}</p>
+              <p className="text-gray-500 text-sm">
+                {semaine[jourMobileIndex].getDate()}/{semaine[jourMobileIndex].getMonth() + 1}
+              </p>
+            </div>
+
+            <button onClick={jourSuivant} className="text-green-600">
+              <ChevronRight size={28} />
+            </button>
+          </div>
+
+          {/* Bouton aujourd'hui */}
+          <button
+            onClick={() => {
+              setDecalageSemaine(0)
+              const aujourd = new Date()
+              setJourMobileIndex((aujourd.getDay() + 6) % 7)
+            }}
+            className="w-full text-green-600 font-bold text-sm mb-4">
+            Revenir à aujourd'hui
+          </button>
+
+          {/* Les entrées du jour sélectionné */}
+          <div className="flex flex-col gap-3">
+            {planningDuJour(semaine[jourMobileIndex]).map((entree) => (
+              <div
+                key={entree.id}
+                style={{
+                  backgroundColor: couleurEmploye(entree.employe_id).background,
+                  borderColor: couleurEmploye(entree.employe_id).border,
+                  borderWidth: "1px",
+                  borderStyle: "solid"
+                }}
+                className="rounded-xl p-4">
+
+                <p className="font-bold text-gray-800">{nomEmploye(entree.employe_id)}</p>
+                <p className="text-gray-600">{nomChantier(entree.chantier_id)}</p>
+                <p className="text-gray-500 text-sm">{entree.heure_debut} - {entree.heure_fin}</p>
+
+                <div className="flex items-center justify-between mt-2">
+                  <span
+                    onClick={() => changerStatutPlanning(entree.id, entree.statut)}
+                    className={`text-sm px-3 py-1 rounded-full font-bold cursor-pointer ${entree.statut === "Réalisé" ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"}`}>
+                    {entree.statut || "Prévu"}
+                  </span>
+
+                  <button
+                    onClick={() => supprimerPlanning(entree.id)}
+                    className="text-red-500 font-bold text-sm">
+                    Supprimer
+                  </button>
+                </div>
+
+              </div>
+            ))}
+
+            {planningDuJour(semaine[jourMobileIndex]).length === 0 && (
+              <p className="text-gray-500 text-center mt-6">Aucune entrée pour ce jour</p>
+            )}
+          </div>
+
         </div>
 
       </div>
