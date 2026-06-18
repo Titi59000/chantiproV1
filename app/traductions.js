@@ -1,0 +1,155 @@
+export const traductions = {
+  fr: {
+    // Général
+    chantpro: "ChantPro",
+    retour: "← Retour",
+    ajouter: "Ajouter",
+    annuler: "Annuler",
+    supprimer: "Supprimer",
+    modifier: "Modifier",
+
+    // Page d'accueil
+    slogan: "Gérez vos chantiers simplement",
+    commencer: "Commencer gratuitement",
+    chantiers: "Chantiers",
+    chantiersDesc: "Suivez tous vos chantiers en temps réel",
+    heures: "Heures",
+    heuresDesc: "Pointage simple pour chaque employé",
+    messagerie: "Messagerie",
+    messagerieDesc: "Communiquez avec toute votre équipe",
+
+    // Navigation
+    accueil: "Accueil",
+    planning: "Planning",
+    messages: "Messages",
+    photos: "Photos",
+    employes: "Employés",
+
+    // Connexion
+    connexion: "Connectez-vous à votre espace",
+    emailOuTelephone: "Email (patron) ou Téléphone (employé)",
+    motDePasseOuPin: "Mot de passe ou Code PIN",
+    seConnecter: "Se connecter",
+    commentAppeler: "Comment voulez-vous être appelé ?",
+  },
+
+  en: {
+    chantpro: "ChantPro",
+    retour: "← Back",
+    ajouter: "Add",
+    annuler: "Cancel",
+    supprimer: "Delete",
+    modifier: "Edit",
+
+    slogan: "Manage your construction sites easily",
+    commencer: "Get started for free",
+    chantiers: "Sites",
+    chantiersDesc: "Track all your sites in real time",
+    heures: "Hours",
+    heuresDesc: "Simple time tracking for each employee",
+    messagerie: "Messaging",
+    messagerieDesc: "Communicate with your whole team",
+
+    accueil: "Home",
+    planning: "Schedule",
+    messages: "Messages",
+    photos: "Photos",
+    employes: "Employees",
+
+    connexion: "Sign in to your account",
+    emailOuTelephone: "Email (manager) or Phone (employee)",
+    motDePasseOuPin: "Password or PIN code",
+    seConnecter: "Sign in",
+    commentAppeler: "What should we call you?",
+  },
+
+  it: {
+    chantpro: "ChantPro",
+    retour: "← Indietro",
+    ajouter: "Aggiungi",
+    annuler: "Annulla",
+    supprimer: "Elimina",
+    modifier: "Modifica",
+
+    slogan: "Gestisci i tuoi cantieri facilmente",
+    commencer: "Inizia gratis",
+    chantiers: "Cantieri",
+    chantiersDesc: "Segui tutti i tuoi cantieri in tempo reale",
+    heures: "Ore",
+    heuresDesc: "Monitoraggio semplice per ogni dipendente",
+    messagerie: "Messaggistica",
+    messagerieDesc: "Comunica con tutta la tua squadra",
+
+    accueil: "Home",
+    planning: "Pianificazione",
+    messages: "Messaggi",
+    photos: "Foto",
+    employes: "Dipendenti",
+
+    connexion: "Accedi al tuo spazio",
+    emailOuTelephone: "Email (capo) o Telefono (dipendente)",
+    motDePasseOuPin: "Password o codice PIN",
+    seConnecter: "Accedi",
+    commentAppeler: "Come vuoi essere chiamato?",
+  },
+
+  ru: {
+    chantpro: "ChantPro",
+    retour: "← Назад",
+    ajouter: "Добавить",
+    annuler: "Отмена",
+    supprimer: "Удалить",
+    modifier: "Изменить",
+
+    slogan: "Управляйте стройками легко",
+    commencer: "Начать бесплатно",
+    chantiers: "Объекты",
+    chantiersDesc: "Следите за всеми объектами в реальном времени",
+    heures: "Часы",
+    heuresDesc: "Простой учёт времени для каждого сотрудника",
+    messagerie: "Сообщения",
+    messagerieDesc: "Общайтесь со всей командой",
+
+    accueil: "Главная",
+    planning: "График",
+    messages: "Сообщения",
+    photos: "Фото",
+    employes: "Сотрудники",
+
+    connexion: "Войдите в свой кабинет",
+    emailOuTelephone: "Email (руководитель) или Телефон (сотрудник)",
+    motDePasseOuPin: "Пароль или PIN-код",
+    seConnecter: "Войти",
+    commentAppeler: "Как вас называть?",
+  },
+
+  pt: {
+    chantpro: "ChantPro",
+    retour: "← Voltar",
+    ajouter: "Adicionar",
+    annuler: "Cancelar",
+    supprimer: "Excluir",
+    modifier: "Editar",
+
+    slogan: "Gerencie seus canteiros facilmente",
+    commencer: "Comece gratuitamente",
+    chantiers: "Canteiros",
+    chantiersDesc: "Acompanhe todos os seus canteiros em tempo real",
+    heures: "Horas",
+    heuresDesc: "Controle simples de horas para cada funcionário",
+    messagerie: "Mensagens",
+    messagerieDesc: "Comunique-se com toda a sua equipe",
+
+    accueil: "Início",
+    planning: "Cronograma",
+    messages: "Mensagens",
+    photos: "Fotos",
+    employes: "Funcionários",
+
+    connexion: "Entre na sua conta",
+    emailOuTelephone: "Email (chefe) ou Telefone (funcionário)",
+    motDePasseOuPin: "Senha ou código PIN",
+    seConnecter: "Entrar",
+    commentAppeler: "Como devemos te chamar?",
+  },
+}
