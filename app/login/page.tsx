@@ -3,10 +3,12 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "../../supabase"
+import { useLangue } from "../LangueContext"
 
 export default function Login() {
 
   const router = useRouter()
+  const { t, langue, changerLangue } = useLangue()
 
   const [identifiant, setIdentifiant] = useState("")
   const [motDePasse, setMotDePasse] = useState("")
@@ -19,7 +21,6 @@ export default function Login() {
     setErreur("")
 
     if (estEmail) {
-      // C'est le patron - vraie vérification avec Supabase Auth
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: identifiant,
         password: motDePasse
@@ -31,10 +32,9 @@ export default function Login() {
         localStorage.setItem("employeNom", nomFinal)
         router.push("/dashboard")
       } else {
-        setErreur("Email ou mot de passe incorrect")
+        setErreur(t("erreurConnexion"))
       }
     } else {
-      // C'est un employé - connexion par téléphone + PIN
       const { data } = await supabase
         .from("employes")
         .select("*")
@@ -47,7 +47,7 @@ export default function Login() {
         localStorage.setItem("employeNom", data.prenom + " " + data.nom)
         router.push("/mon-espace")
       } else {
-        setErreur("Téléphone ou code PIN incorrect")
+        setErreur(t("erreurConnexion"))
       }
     }
   }
@@ -57,11 +57,24 @@ export default function Login() {
 
       <div className="bg-white p-8 rounded-xl shadow w-96">
 
+        <div className="flex justify-end mb-2">
+          <select
+            value={langue}
+            onChange={(e) => changerLangue(e.target.value)}
+            className="p-1 border rounded text-xs text-gray-700 bg-white">
+            <option value="fr">🇫🇷 FR</option>
+            <option value="en">🇬🇧 EN</option>
+            <option value="it">🇮🇹 IT</option>
+            <option value="ru">🇷🇺 RU</option>
+            <option value="pt">🇵🇹 PT</option>
+          </select>
+        </div>
+
         <h1 className="text-2xl font-bold text-green-600 text-center">
-          ChantPro
+          {t("chantpro")}
         </h1>
         <p className="text-gray-500 text-center mt-2">
-          Connectez-vous à votre espace
+          {t("connexion")}
         </p>
 
         {erreur && (
@@ -70,7 +83,7 @@ export default function Login() {
 
         <div className="mt-6">
           <label className="text-sm font-bold text-gray-700">
-            Email (patron) ou Téléphone (employé)
+            {t("emailOuTelephone")}
           </label>
           <input
             type="text"
@@ -84,7 +97,7 @@ export default function Login() {
         {estEmail && (
           <div className="mt-4">
             <label className="text-sm font-bold text-gray-700">
-              Comment voulez-vous être appelé ?
+              {t("commentAppeler")}
             </label>
             <input
               type="text"
@@ -98,7 +111,7 @@ export default function Login() {
 
         <div className="mt-4">
           <label className="text-sm font-bold text-gray-700">
-            Mot de passe ou Code PIN
+            {t("motDePasseOuPin")}
           </label>
           <input
             type="password"
@@ -112,7 +125,7 @@ export default function Login() {
         <button
           onClick={seConnecter}
           className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg font-bold">
-          Se connecter
+          {t("seConnecter")}
         </button>
 
       </div>

@@ -5,8 +5,11 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../supabase"
 import BarreNavigation from "../components/BarreNavigation"
 import { ArrowLeft } from "lucide-react"
+import { useLangue } from "../LangueContext"
 
 export default function Messagerie() {
+
+  const { t } = useLangue()
 
   const [monId, setMonId] = useState(null)
   const [monNom, setMonNom] = useState("")
@@ -16,8 +19,6 @@ export default function Messagerie() {
   const [messages, setMessages] = useState([])
   const [nouveauMessage, setNouveauMessage] = useState("")
   const [showNouveauMessage, setShowNouveauMessage] = useState(false)
-
-  // "liste" ou "conversation" - sert uniquement sur mobile
   const [vueMode, setVueMode] = useState("liste")
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export default function Messagerie() {
     const autresPersonnes = data.filter(e => String(e.id) !== String(monId))
 
     const listeComplete = [
-      { id: "0", prenom: monId === "0" ? monNom : "Patron", nom: "", role: "Patron" },
+      { id: "0", prenom: monId === "0" ? monNom : t("patron"), nom: "", role: t("patron") },
       ...autresPersonnes
     ].filter(p => String(p.id) !== String(monId))
 
@@ -76,7 +77,6 @@ export default function Messagerie() {
     setVueMode("conversation")
   }
 
-  // Quand on clique sur un contact dans la liste (mobile)
   function ouvrirConversation(employe) {
     setContactActif(employe)
     setVueMode("conversation")
@@ -97,23 +97,20 @@ export default function Messagerie() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
 
-      {/* Header - caché sur mobile quand on est en conversation */}
       <div className={`bg-white shadow px-6 py-4 flex justify-between items-center ${vueMode === "conversation" ? "hidden md:flex" : "flex"}`}>
-        <h1 className="text-xl font-bold text-green-600">ChantPro</h1>
-        <p className="text-gray-500 text-sm">Connecté : {monNom}</p>
+        <h1 className="text-xl font-bold text-green-600">{t("chantpro")}</h1>
+        <p className="text-gray-500 text-sm">{t("connecte")} : {monNom}</p>
       </div>
 
       <div className="flex" style={{ height: "calc(100vh - 150px)" }}>
 
-        {/* Colonne gauche - liste des conversations */}
-        {/* Sur mobile : visible seulement en mode "liste". Sur desktop : toujours visible */}
         <div className={`w-full md:w-64 bg-white border-r p-4 overflow-y-auto ${vueMode === "conversation" ? "hidden md:block" : "block"}`}>
-          <h2 className="font-bold text-gray-800 mb-4">Messages</h2>
+          <h2 className="font-bold text-gray-800 mb-4">{t("messages")}</h2>
 
           <button
             onClick={() => setShowNouveauMessage(true)}
             className="w-full bg-green-600 text-white py-2 rounded-lg text-sm font-bold mb-4">
-            + Nouveau message
+            {t("nouveauMessage")}
           </button>
 
           {employes.map((employe) => (
@@ -134,13 +131,10 @@ export default function Messagerie() {
           ))}
         </div>
 
-        {/* Colonne droite - les messages */}
-        {/* Sur mobile : visible seulement en mode "conversation". Sur desktop : toujours visible */}
         <div className={`flex-1 flex flex-col ${vueMode === "liste" ? "hidden md:flex" : "flex"}`}>
 
           {contactActif && (
             <div className="bg-white border-b px-6 py-4 flex items-center gap-3">
-              {/* Bouton retour visible seulement sur mobile */}
               <button
                 onClick={() => setVueMode("liste")}
                 className="md:hidden text-gray-600">
@@ -168,7 +162,7 @@ export default function Messagerie() {
           <div className="bg-white border-t p-4 flex gap-3">
             <input
               type="text"
-              placeholder="Écrire un message..."
+              placeholder={t("ecrireMessage")}
               value={nouveauMessage}
               onChange={(e) => setNouveauMessage(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && envoyerMessage()}
@@ -177,7 +171,7 @@ export default function Messagerie() {
             <button
               onClick={envoyerMessage}
               className="bg-green-600 text-white px-6 py-3 rounded-lg font-bold">
-              Envoyer
+              {t("envoyer")}
             </button>
           </div>
 
@@ -188,8 +182,8 @@ export default function Messagerie() {
       {showNouveauMessage && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow w-96">
-            <h3 className="font-bold text-gray-800 mb-4">Nouveau message</h3>
-            <p className="text-sm text-gray-500 mb-3">Choisir un destinataire :</p>
+            <h3 className="font-bold text-gray-800 mb-4">{t("nouveauMessage")}</h3>
+            <p className="text-sm text-gray-500 mb-3">{t("choisirDestinataire")}</p>
 
             <div className="flex flex-col gap-2 max-h-64 overflow-y-auto">
               {employes.map((employe) => (
@@ -211,7 +205,7 @@ export default function Messagerie() {
             <button
               onClick={() => setShowNouveauMessage(false)}
               className="w-full mt-4 bg-gray-200 text-gray-700 py-2 rounded-lg font-bold">
-              Annuler
+              {t("annuler")}
             </button>
           </div>
         </div>

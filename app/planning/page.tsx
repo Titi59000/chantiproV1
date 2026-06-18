@@ -5,8 +5,11 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../supabase"
 import BarreNavigation from "../components/BarreNavigation"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useLangue } from "../LangueContext"
 
 export default function Planning() {
+
+  const { t } = useLangue()
 
   const [planning, setPlanning] = useState([])
   const [employes, setEmployes] = useState([])
@@ -18,8 +21,6 @@ export default function Planning() {
   const [heureDebut, setHeureDebut] = useState("")
   const [heureFin, setHeureFin] = useState("")
   const [decalageSemaine, setDecalageSemaine] = useState(0)
-
-  // Index du jour affiché sur mobile (0 = Lundi, 6 = Dimanche)
   const [jourMobileIndex, setJourMobileIndex] = useState(0)
 
   const couleurs = [
@@ -84,8 +85,8 @@ export default function Planning() {
   }
 
   const semaine = getSemaine()
-  const nomsJours = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
-  const nomsJoursLongs = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+  const nomsJours = [t("lundi").slice(0, 3), t("mardi").slice(0, 3), t("mercredi").slice(0, 3), t("jeudi").slice(0, 3), t("vendredi").slice(0, 3), t("samedi").slice(0, 3), t("dimanche").slice(0, 3)]
+  const nomsJoursLongs = [t("lundi"), t("mardi"), t("mercredi"), t("jeudi"), t("vendredi"), t("samedi"), t("dimanche")]
 
   async function chargerDonnees() {
     const { data: planningData } = await supabase
@@ -162,7 +163,6 @@ export default function Planning() {
     return planning.filter(p => p.date === dateStr)
   }
 
-  // Aller au jour précédent (mobile)
   function jourPrecedent() {
     if (jourMobileIndex === 0) {
       setDecalageSemaine(decalageSemaine - 1)
@@ -172,7 +172,6 @@ export default function Planning() {
     }
   }
 
-  // Aller au jour suivant (mobile)
   function jourSuivant() {
     if (jourMobileIndex === 6) {
       setDecalageSemaine(decalageSemaine + 1)
@@ -189,35 +188,34 @@ export default function Planning() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
 
-      {/* Header */}
       <div className="bg-white shadow px-6 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-green-600">ChantPro</h1>
+        <h1 className="text-xl font-bold text-green-600">{t("chantpro")}</h1>
         <Link href="/dashboard">
-          <button className="text-gray-500 text-sm">← Retour</button>
+          <button className="text-gray-500 text-sm">{t("retour")}</button>
         </Link>
       </div>
 
       <div className="p-6">
 
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Planning de la semaine</h2>
+          <h2 className="text-xl font-bold text-gray-800">{t("planningSemaine")}</h2>
           <button
             onClick={() => setShowForm(true)}
             className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold">
-            + Ajouter
+            + {t("ajouter")}
           </button>
         </div>
 
         {showForm && (
           <div className="bg-white p-6 rounded-xl shadow mb-6">
-            <h3 className="font-bold text-gray-800 mb-4">Nouvelle entrée</h3>
+            <h3 className="font-bold text-gray-800 mb-4">{t("nouvelleEntree")}</h3>
             <div className="flex flex-col gap-3">
 
               <select
                 value={employeId}
                 onChange={(e) => setEmployeId(e.target.value)}
                 className="p-3 border rounded-lg text-gray-700">
-                <option value="">Choisir un employé</option>
+                <option value="">{t("choisirEmploye")}</option>
                 {employes.map(e => (
                   <option key={e.id} value={e.id}>{e.prenom} {e.nom}</option>
                 ))}
@@ -227,7 +225,7 @@ export default function Planning() {
                 value={chantierId}
                 onChange={(e) => setChantierId(e.target.value)}
                 className="p-3 border rounded-lg text-gray-700">
-                <option value="">Choisir un chantier</option>
+                <option value="">{t("choisirChantier")}</option>
                 {chantiers.map(c => (
                   <option key={c.id} value={c.id}>{c.nom}</option>
                 ))}
@@ -258,12 +256,12 @@ export default function Planning() {
                 <button
                   onClick={ajouterPlanning}
                   className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold">
-                  Ajouter
+                  {t("ajouter")}
                 </button>
                 <button
                   onClick={() => setShowForm(false)}
                   className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-bold">
-                  Annuler
+                  {t("annuler")}
                 </button>
               </div>
 
@@ -271,30 +269,28 @@ export default function Planning() {
           </div>
         )}
 
-        {/* Navigation entre les semaines - visible seulement sur desktop */}
         <div className="hidden md:flex justify-between items-center mb-4">
 
           <button
             onClick={() => setDecalageSemaine(decalageSemaine - 1)}
             className="bg-white shadow px-4 py-2 rounded-lg font-bold text-gray-700">
-            ← Semaine précédente
+            {t("semainePrecedente")}
           </button>
 
           <button
             onClick={() => setDecalageSemaine(0)}
             className="text-green-600 font-bold text-sm">
-            Revenir à aujourd'hui
+            {t("revenirAujourdhui")}
           </button>
 
           <button
             onClick={() => setDecalageSemaine(decalageSemaine + 1)}
             className="bg-white shadow px-4 py-2 rounded-lg font-bold text-gray-700">
-            Semaine suivante →
+            {t("semaineSuivante")}
           </button>
 
         </div>
 
-        {/* VUE DESKTOP - 7 jours côte à côte */}
         <div className="hidden md:grid grid-cols-7 gap-2">
           {semaine.map((jour, index) => (
             <div key={index} className="bg-white rounded-xl shadow overflow-hidden">
@@ -324,7 +320,7 @@ export default function Planning() {
                       <span
                         onClick={() => changerStatutPlanning(entree.id, entree.statut)}
                         className={`text-xs px-2 py-0.5 rounded-full font-bold cursor-pointer ${entree.statut === "Réalisé" ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"}`}>
-                        {entree.statut || "Prévu"}
+                        {entree.statut === "Réalisé" ? t("realise") : t("prevu")}
                       </span>
 
                       <button
@@ -341,10 +337,8 @@ export default function Planning() {
           ))}
         </div>
 
-        {/* VUE MOBILE - un jour à la fois */}
         <div className="md:hidden">
 
-          {/* Navigation jour précédent/suivant */}
           <div className="flex items-center justify-between mb-4 bg-white rounded-xl shadow p-3">
             <button onClick={jourPrecedent} className="text-green-600">
               <ChevronLeft size={28} />
@@ -362,7 +356,6 @@ export default function Planning() {
             </button>
           </div>
 
-          {/* Bouton aujourd'hui */}
           <button
             onClick={() => {
               setDecalageSemaine(0)
@@ -370,10 +363,9 @@ export default function Planning() {
               setJourMobileIndex((aujourd.getDay() + 6) % 7)
             }}
             className="w-full text-green-600 font-bold text-sm mb-4">
-            Revenir à aujourd'hui
+            {t("revenirAujourdhui")}
           </button>
 
-          {/* Les entrées du jour sélectionné */}
           <div className="flex flex-col gap-3">
             {planningDuJour(semaine[jourMobileIndex]).map((entree) => (
               <div
@@ -394,13 +386,13 @@ export default function Planning() {
                   <span
                     onClick={() => changerStatutPlanning(entree.id, entree.statut)}
                     className={`text-sm px-3 py-1 rounded-full font-bold cursor-pointer ${entree.statut === "Réalisé" ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"}`}>
-                    {entree.statut || "Prévu"}
+                    {entree.statut === "Réalisé" ? t("realise") : t("prevu")}
                   </span>
 
                   <button
                     onClick={() => supprimerPlanning(entree.id)}
                     className="text-red-500 font-bold text-sm">
-                    Supprimer
+                    {t("supprimer")}
                   </button>
                 </div>
 
@@ -408,7 +400,7 @@ export default function Planning() {
             ))}
 
             {planningDuJour(semaine[jourMobileIndex]).length === 0 && (
-              <p className="text-gray-500 text-center mt-6">Aucune entrée pour ce jour</p>
+              <p className="text-gray-500 text-center mt-6">{t("aucuneEntreeJour")}</p>
             )}
           </div>
 
