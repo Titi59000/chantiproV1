@@ -1,6 +1,5 @@
 export const traductions = {
   fr: {
-    // Général
     chantpro: "ChantPro",
     retour: "← Retour",
     ajouter: "Ajouter",
@@ -8,7 +7,6 @@ export const traductions = {
     supprimer: "Supprimer",
     modifier: "Modifier",
 
-    // Page d'accueil
     slogan: "Gérez vos chantiers simplement",
     commencer: "Commencer gratuitement",
     chantiers: "Chantiers",
@@ -18,19 +16,24 @@ export const traductions = {
     messagerie: "Messagerie",
     messagerieDesc: "Communiquez avec toute votre équipe",
 
-    // Navigation
     accueil: "Accueil",
     planning: "Planning",
     messages: "Messages",
     photos: "Photos",
     employes: "Employés",
 
-    // Connexion
     connexion: "Connectez-vous à votre espace",
     emailOuTelephone: "Email (patron) ou Téléphone (employé)",
     motDePasseOuPin: "Mot de passe ou Code PIN",
     seConnecter: "Se connecter",
     commentAppeler: "Comment voulez-vous être appelé ?",
+
+    bonjour: "Bonjour",
+    chantiersActifs: "Chantiers actifs",
+    chantiersEnCours: "Chantiers en cours",
+    enCours: "En cours",
+    enPause: "En pause",
+    termine: "Terminé",
   },
 
   en: {
@@ -61,6 +64,13 @@ export const traductions = {
     motDePasseOuPin: "Password or PIN code",
     seConnecter: "Sign in",
     commentAppeler: "What should we call you?",
+
+    bonjour: "Hello",
+    chantiersActifs: "Active sites",
+    chantiersEnCours: "Sites in progress",
+    enCours: "In progress",
+    enPause: "On hold",
+    termine: "Completed",
   },
 
   it: {
@@ -91,6 +101,13 @@ export const traductions = {
     motDePasseOuPin: "Password o codice PIN",
     seConnecter: "Accedi",
     commentAppeler: "Come vuoi essere chiamato?",
+
+    bonjour: "Ciao",
+    chantiersActifs: "Cantieri attivi",
+    chantiersEnCours: "Cantieri in corso",
+    enCours: "In corso",
+    enPause: "In pausa",
+    termine: "Completato",
   },
 
   ru: {
@@ -121,6 +138,13 @@ export const traductions = {
     motDePasseOuPin: "Пароль или PIN-код",
     seConnecter: "Войти",
     commentAppeler: "Как вас называть?",
+
+    bonjour: "Привет",
+    chantiersActifs: "Активные объекты",
+    chantiersEnCours: "Текущие объекты",
+    enCours: "В процессе",
+    enPause: "На паузе",
+    termine: "Завершено",
   },
 
   pt: {
@@ -151,5 +175,12 @@ export const traductions = {
     motDePasseOuPin: "Senha ou código PIN",
     seConnecter: "Entrar",
     commentAppeler: "Como devemos te chamar?",
+
+    bonjour: "Olá",
+    chantiersActifs: "Canteiros ativos",
+    chantiersEnCours: "Canteiros em andamento",
+    enCours: "Em andamento",
+    enPause: "Em pausa",
+    termine: "Concluído",
   },
 }
