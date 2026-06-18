@@ -13,16 +13,19 @@ export default function Login() {
   const [nomAffiche, setNomAffiche] = useState("")
   const [erreur, setErreur] = useState("")
 
-  // On détecte si c'est un email pour savoir si on montre le champ nom
   const estEmail = identifiant.includes("@")
 
   async function seConnecter() {
     setErreur("")
 
     if (estEmail) {
-      // C'est le patron - connexion par email + mot de passe
-      if (identifiant && motDePasse) {
-        // On utilise le nom choisi, sinon on prend la partie avant le @ par défaut
+      // C'est le patron - vraie vérification avec Supabase Auth
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: identifiant,
+        password: motDePasse
+      })
+
+      if (data.user) {
         const nomFinal = nomAffiche.trim() || identifiant.split("@")[0]
         localStorage.setItem("employeId", "0")
         localStorage.setItem("employeNom", nomFinal)
@@ -78,7 +81,6 @@ export default function Login() {
           />
         </div>
 
-        {/* Champ visible seulement si c'est un email (patron) */}
         {estEmail && (
           <div className="mt-4">
             <label className="text-sm font-bold text-gray-700">
