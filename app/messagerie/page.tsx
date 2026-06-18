@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "../../supabase"
 import BarreNavigation from "../components/BarreNavigation"
+import { ArrowLeft } from "lucide-react"
 
 export default function Messagerie() {
 
@@ -15,6 +16,9 @@ export default function Messagerie() {
   const [messages, setMessages] = useState([])
   const [nouveauMessage, setNouveauMessage] = useState("")
   const [showNouveauMessage, setShowNouveauMessage] = useState(false)
+
+  // "liste" ou "conversation" - sert uniquement sur mobile
+  const [vueMode, setVueMode] = useState("liste")
 
   useEffect(() => {
     const id = localStorage.getItem("employeId")
@@ -69,6 +73,13 @@ export default function Messagerie() {
   function choisirDestinataire(personne) {
     setContactActif(personne)
     setShowNouveauMessage(false)
+    setVueMode("conversation")
+  }
+
+  // Quand on clique sur un contact dans la liste (mobile)
+  function ouvrirConversation(employe) {
+    setContactActif(employe)
+    setVueMode("conversation")
   }
 
   useEffect(() => {
@@ -86,14 +97,17 @@ export default function Messagerie() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
 
-      <div className="bg-white shadow px-6 py-4 flex justify-between items-center">
+      {/* Header - caché sur mobile quand on est en conversation */}
+      <div className={`bg-white shadow px-6 py-4 flex justify-between items-center ${vueMode === "conversation" ? "hidden md:flex" : "flex"}`}>
         <h1 className="text-xl font-bold text-green-600">ChantPro</h1>
         <p className="text-gray-500 text-sm">Connecté : {monNom}</p>
       </div>
 
       <div className="flex" style={{ height: "calc(100vh - 150px)" }}>
 
-        <div className="w-64 bg-white border-r p-4 overflow-y-auto">
+        {/* Colonne gauche - liste des conversations */}
+        {/* Sur mobile : visible seulement en mode "liste". Sur desktop : toujours visible */}
+        <div className={`w-full md:w-64 bg-white border-r p-4 overflow-y-auto ${vueMode === "conversation" ? "hidden md:block" : "block"}`}>
           <h2 className="font-bold text-gray-800 mb-4">Messages</h2>
 
           <button
@@ -105,7 +119,7 @@ export default function Messagerie() {
           {employes.map((employe) => (
             <div
               key={employe.id}
-              onClick={() => setContactActif(employe)}
+              onClick={() => ouvrirConversation(employe)}
               className={`p-3 rounded-lg cursor-pointer mb-2 ${contactActif && contactActif.id === employe.id ? "bg-green-50" : "hover:bg-gray-50"}`}>
               <div className="flex items-center gap-3">
                 <div className="bg-green-100 text-green-700 font-bold rounded-full w-8 h-8 flex items-center justify-center text-sm">
@@ -120,12 +134,22 @@ export default function Messagerie() {
           ))}
         </div>
 
-        <div className="flex-1 flex flex-col">
+        {/* Colonne droite - les messages */}
+        {/* Sur mobile : visible seulement en mode "conversation". Sur desktop : toujours visible */}
+        <div className={`flex-1 flex flex-col ${vueMode === "liste" ? "hidden md:flex" : "flex"}`}>
 
           {contactActif && (
-            <div className="bg-white border-b px-6 py-4">
-              <p className="font-bold text-gray-800">{contactActif.prenom} {contactActif.nom}</p>
-              <p className="text-gray-500 text-sm">{contactActif.role}</p>
+            <div className="bg-white border-b px-6 py-4 flex items-center gap-3">
+              {/* Bouton retour visible seulement sur mobile */}
+              <button
+                onClick={() => setVueMode("liste")}
+                className="md:hidden text-gray-600">
+                <ArrowLeft size={22} />
+              </button>
+              <div>
+                <p className="font-bold text-gray-800">{contactActif.prenom} {contactActif.nom}</p>
+                <p className="text-gray-500 text-sm">{contactActif.role}</p>
+              </div>
             </div>
           )}
 
