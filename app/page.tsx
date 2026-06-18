@@ -6,10 +6,24 @@ import { useLangue } from "./LangueContext"
 
 export default function Home() {
 
-  const { t } = useLangue()
+  const { t, langue, changerLangue } = useLangue()
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4 py-8">
+
+      {/* Sélecteur de langue */}
+      <div className="absolute top-4 right-4">
+        <select
+          value={langue}
+          onChange={(e) => changerLangue(e.target.value)}
+          className="p-2 border rounded-lg text-sm text-gray-700 bg-white">
+          <option value="fr">🇫🇷 Français</option>
+          <option value="en">🇬🇧 English</option>
+          <option value="it">🇮🇹 Italiano</option>
+          <option value="ru">🇷🇺 Русский</option>
+          <option value="pt">🇵🇹 Português</option>
+        </select>
+      </div>
 
       <h1 className="text-4xl font-bold text-green-600 text-center">
         {t("chantpro")}
