@@ -16,6 +16,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ChantPro",
   description: "Gérez vos chantiers simplement",
+  manifest: "/manifest.json",
+  themeColor: "#16A34A",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "ChantPro",
+  },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -25,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="fr"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
