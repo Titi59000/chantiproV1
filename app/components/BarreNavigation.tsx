@@ -40,10 +40,12 @@ export default function BarreNavigation() {
         <span className="text-xs mt-1">Messages</span>
       </Link>
 
-      <button className="flex flex-col items-center text-gray-500">
-        <Camera size={24} />
-        <span className="text-xs mt-1">Photos</span>
-      </button>
+    <Link
+  href="/photos"
+  className={`flex flex-col items-center ${pathname === "/photos" ? "text-green-600" : "text-gray-500"}`}>
+  <Camera size={24} />
+  <span className="text-xs mt-1">Photos</span>
+</Link>
 
     </div>
   )
